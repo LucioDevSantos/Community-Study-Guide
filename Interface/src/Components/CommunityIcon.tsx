@@ -2,6 +2,7 @@ import { Link } from "react-router-dom"
 
 
 type data = {
+    id: number
     name:string,
     code:number
 }
