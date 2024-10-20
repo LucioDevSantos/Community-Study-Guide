@@ -1,26 +1,56 @@
 
+import { useEffect, useState } from "react"
 import CommunityIcon from "../Components/CommunityIcon"
+import { apiSpring } from "../Services/api"
+import CommunityModel from "../Interfaces/CommunityModel"
 
-type Community = {
-    id: number,
-    name:string,
-    
-}
+export const CommunityUrl = "/community"
+
+
+
 
 export default function Communities(){
 
+    const [ coms, setComs ] = useState<CommunityModel[] | null>(null)
+    const [loading, setLoading] = useState<boolean>(true)
+    const [error, setError] = useState<string | null>(null)
+
+useEffect(()=> {
+    const getData = async () =>{
+        try {
+            const response = await apiSpring.get<CommunityModel[]>(`${CommunityUrl}/`)
+            setComs(response.data)
+        } catch (err) {
+            setError(err instanceof Error ? err.message: "Unknown Error")
+        } finally {
+            setLoading(false)
+        }
+    }
+    getData()
+}, [])
+    
+if (loading) {
+    return <div>Carregando...</div>;
+  }
+
+  if (error) {
+    return <div>{`Erro: ${error}`}</div>;
+  }
 
 
 
-const data = {
-    name: "test",
-    code: 2453
-}
 
     return(
         <>
         <div className="bg-slate-700 w-screen h-full ">
-        <CommunityIcon name={data.name} code={data.code}/>
+        {
+            coms?.map((community) => (
+                <CommunityIcon key={community.id} name={community.name} code={community.code} id={community.id}/>
+            )
+
+            )
+        }
+        
         </div>
         </>
     )
