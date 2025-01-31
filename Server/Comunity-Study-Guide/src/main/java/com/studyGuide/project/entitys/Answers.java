@@ -19,7 +19,7 @@ public class Answers implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(columnDefinition = "LONGTEXT")
+
     private String text;
 
     @ManyToOne
