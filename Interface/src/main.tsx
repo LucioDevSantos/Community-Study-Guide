@@ -1,63 +1,61 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import './index.css'
-import { createBrowserRouter, RouterProvider } from 'react-router-dom'
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
-import CreateQuestion from './Routes/CommunityRoutes/Questions/CreateQuestion.tsx'
-import Questions from './Routes/Questions.tsx'
-import QuestionsAll from './Routes/AllQuestions.tsx'
-import ErrorPage from './Routes/ErrorHandle/ErrorPage.tsx'
-import Community from './Routes/CommunityRoutes/Community.tsx'
-import Communities from './Routes/Communities.tsx'
-import CommunityCreate from './Routes/CommunityRoutes/CommunityCreate.tsx'
-
-
+import CreateQuestion from "./Routes/CommunityRoutes/Questions/CreateQuestion.tsx";
+import Questions from "./Routes/Questions.tsx";
+import QuestionsAll from "./Routes/AllQuestions.tsx";
+import ErrorPage from "./Routes/ErrorHandle/ErrorPage.tsx";
+import Community from "./Routes/CommunityRoutes/Community.tsx";
+import Home from "./Routes/Home.tsx";
+import CommunityCreate from "./Routes/CommunityRoutes/CommunityCreate.tsx";
+import CommunityChat from "./Routes/CommunityRoutes/communityChat.tsx";
 
 const router = createBrowserRouter([
   {
-    path:"/",
-    element: <Communities/>,
+    path: "/",
+    element: <Home />,
   },
   {
     path: "/questions",
-    element: <QuestionsAll/>
+    element: <QuestionsAll />,
+  },
+  // {
+  //   path: "/create",
+  //   element: <CreateQuestion/>
+  // },
+  {
+    path: "/**",
+    element: <ErrorPage />,
   },
   {
-    path: "/create",
-    element: <CreateQuestion/>
-  },
-  {
-    path:"/**",
-    element: <ErrorPage/>
-  },
-  {
-    path:"/community/:id",
+    path: "/community/:id",
     element: <Community />,
     children: [
       {
         path: "questions",
-        element: <Questions/>
+        element: <Questions />,
       },
       {
-        path:"createQuestion",
-        element: <CreateQuestion/>
-      }
-    ]
+        path: "createQuestion",
+        element: <CreateQuestion />,
+      },
+      {
+        path: "chat",
+        element: <CommunityChat />,
+      },
+    ],
   },
-    {
-      path:"/community/create",
-      element:<CommunityCreate/>
-    }
 
+  {
+    path: "/community/create",
+    element: <CommunityCreate />,
+  },
+]);
 
-  
-])
-
-
-ReactDOM.createRoot(document.getElementById('root')!).render(
+ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
- 
-      <RouterProvider router={router}/>
-
+    <RouterProvider router={router} />
   </React.StrictMode>,
-)
+);

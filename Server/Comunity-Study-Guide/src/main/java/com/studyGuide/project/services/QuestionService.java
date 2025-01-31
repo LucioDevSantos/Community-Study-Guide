@@ -1,14 +1,18 @@
 package com.studyGuide.project.services;
 
 
-import com.studyGuide.project.entitys.OpenQuestion;
-import com.studyGuide.project.repositories.OpenQuestionRepo;
+
+import com.studyGuide.project.dtos.QuestionDto;
+import com.studyGuide.project.entitys.Answers;
+import com.studyGuide.project.entitys.Question;
+import com.studyGuide.project.repositories.AnswerRepo;
 import com.studyGuide.project.repositories.QuestionRepo;
-import org.aspectj.apache.bcel.classfile.Module;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class QuestionService {
@@ -17,27 +21,36 @@ public class QuestionService {
     @Autowired
     private QuestionRepo questionRepo;
     @Autowired
-    private OpenQuestionRepo OpenRepo;
+    private AnswerRepo answerRepo;
 
+    @Autowired
+    private EntityManager entityManager;
 
-    public OpenQuestion SaveOpenService(OpenQuestion openQuestion){
-        var savedQuestion = OpenRepo.save(openQuestion);
-
-        return savedQuestion;
+    public Question SaveOpenService(Question Question){
+        return questionRepo.save(Question);
     }
 
 
-    public OpenQuestion AddAnswer(Long id, String answer){
+    public QuestionDto AddAnswer(Long id, String text){
 
-        OpenQuestion open = OpenRepo.findById(id).orElseThrow(() -> new RuntimeException("no Question Found :/"));
+        Question question = questionRepo.findById(id).orElseThrow(() -> new RuntimeException("no Question Found :/"));
+        Answers answers = new Answers();
 
-        open.getAnswers().add(answer);
+        answers.setText(text);
+        answers.setQuestion(question);
+        var saved = answerRepo.save(answers);
 
-        return OpenRepo.save(open);
+        question.getAnswers().add(saved);
+
+        return new QuestionDto(question);
 
 
     }
 
-
+    @SuppressWarnings("unchecked")
+    public List<QuestionDto> findQuestion(String content) {
+        List<Question> result = entityManager.createNativeQuery("SELECT id, topic, content, MATCH(topic, content) AGAINST(:content) as score FROM questions WHERE MATCH(topic, content) AGAINST(:content)", Question.class).setParameter("content", content).getResultList();
+    return result.stream().map(QuestionDto::new).toList();
+    }
 
 }

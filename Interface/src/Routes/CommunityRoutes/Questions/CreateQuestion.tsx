@@ -3,7 +3,7 @@ import "../../../styles/main.css"
 import { ChangeEvent, FormEvent, useState } from "react"
 import { apiSpring } from "../../../Services/api"
 import { House } from "lucide-react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 
 
@@ -57,6 +57,13 @@ export default function CreateQuestion(){
         }
     ]) 
 
+    const locateData = useLocation()
+
+const comData = locateData.state || {}
+
+
+
+
     const handleChangeOpt = (e:ChangeEvent<HTMLInputElement>): void => {
 
         const { name, value, checked } = e.target
@@ -106,7 +113,10 @@ export default function CreateQuestion(){
 
 
         try{
-            const response = await apiSpring.post('/guide/question', questionComplete );
+            const response = await apiSpring.post('/guide/question', {
+                questionComplete,
+                id: comData.id,
+            } );
             console.log(response.data)
         } catch(error) {
             console.error(error)
